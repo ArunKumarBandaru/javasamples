@@ -1,0 +1,29 @@
+[10/18 12:00 PM] Khushboo Vansh
+[11:53 am] Diksha Gupta
+Discussion of previous project followed by questions -
+1. reactive streams in java .. pending
+
+2. How do parallel streams work internally -- 
+multiple threads executing in diff cores wich will give .. uses fork jojn common multithreading process
+
+3. types of functional interface. Java examples for Consumer & Supplier
+
+4. Why Stringjoiner is introduced if we already have StringBuilder.
+
+5. How would you exclude some beans to get created ?
+using exclude
+and condition based on
+Condition(App.class) : App.class should return true.s
+
+6. How can we specify multiple datasources in a springboot application?
+
+7. Purpose of bootstrap.yml file
+this one is root for application.yml file
+
+8. Springboot actuator. Endpoints?
+9. Cyclic dependency in spring? How to avoid?
+10.Transaction management in microservices?
+11. Difference b/w IOC & Dependency injection?
+12. New features of JAVA 8 & JAVA 11.
+
+
