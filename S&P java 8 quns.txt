@@ -1,0 +1,447 @@
+Arrays.stream(s.split("")) is the common for all the string split examples
+
+Remove duplicates from string and return in same order". 
+
+String s = "dabfcadef"; -> dabfce
+
+
+s.chars().distinct().mapToObj( c-> (char)  c ).forEach(System.out::println);
+
+Arrays.stream(s.split("")).distinct().forEach(System.out::print);
+
+
+2)  Given a sentence find the word that has the highest length. The solution is:
+
+String s = "I am interested123455 to grow in my organization";    
+     String maxString = Arrays.stream(s.split(" ")).max(Comparator.comparing(String::length)).get();
+    System.out.println("The maxString is: " + maxString);
+    
+3) Given a sentence find the word that has the 2nd (Nth) highest length.
+
+    Answer is below: skip(N). N =0 (highest) N =1 (2nd Highest) N =2 (3rd Highest...)
+
+String a =  Arrays.stream(s.split("")).sorted(Comparator.comparing(String::length).reversed()).skip(0).findFirst().get();
+
+ System.out.println(a);
+
+This question asked in SNP. They will tweak the same question with list of Employee Objects. But this is the base logic.
+
+
+Q4) Find the length of the longest word
+
+Solution : Arrays.stream(s.split(" ")).mapToInt(l -> l.length()).max().getAsInt();
+
+Q5). Find the 2nd highest length word in the given sentence
+
+Solution : Arrays.stream(s.split(" ")).map(l -> l.length()).sorted(Comparator.reverseOrder()).skip(1).findFirst().get();
+// first three largest elements , List<Integer> list = Arrays.stream(arr).boxed().sorted(Comparator.reverseOrder()).limit(3).collect(Collectors.toList());
+
+
+Q6) Given a sentence, find the number of occurrence of each word.
+
+Solution:
+
+String input = "the quick brown fox jumps right over the little lazy dog little";
+            Map<String, Long> collect = Arrays.stream(input.split(" "))
+                           .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));            
+            System.out.println(collect);
+
+Q7) Given a word, find the occurrence of Each Character
+
+ Map<Character, Long> characterCountMap = input
+                .chars() // convert to IntStream
+                .mapToObj(c -> (char) c) // map to Character object
+                .filter(ch -> !Character.isWhitespace(ch))
+                .collect(Collectors.groupingBy(ch -> ch, Collectors.counting()));
+
+  Map<String, Long> characterCountMap = 
+				Arrays.stream(s.split(""))// convert to IntStream
+                .filter(c -> !" ".equals(c))
+                .collect(Collectors.groupingBy(ch -> ch, Collectors.counting()));
+
+Q8) There is a list of Employees and Employee object has a field called e-mail.
+	 Find the list of domains ( gmail.com, yahoo.com..) and the no of occurrences for each domain.
+
+Q9) Given a string, find the words with the maximum number of vowels.
+
+       "The quick brown fox jumps right over the little lazy dog."
+        Maximum Number of Vowels: 2        
+        output Words: quick, over, little  ( because each word has maximum of 2 vowels)
+
+
+
+Solution is:
+
+String s = "The quick brown fox jumps right over the little lazy dog.";        
+        Arrays.stream(s.split(" "))
+            .filter(e -> e.replaceAll("[^aeiouAEIOU]", "").length() == 2)
+            .forEach(System.out::println);
+
+
+
+NOTE: Please understand the REGEX solution here
+
+
+Q10) Reverse a string with speical characters and Speical characters position shouldn't be changed".
+
+
+
+Solution is:
+
+ public static String reverseString(String input) {
+
+        String reversedString = new StringBuffer(input.replaceAll("[^a-zA-Z]", "")).reverse().toString();
+        String replacedString = input.replaceAll("[a-zA-Z]", "_");
+
+        char ch[] = reversedString.toCharArray();
+        for(char c:ch) {
+            replacedString = replacedString.replaceFirst("_", String.valueOf(c));
+        }
+        System.out.println("-------> " + replacedString);
+        return replacedString;
+    }
+    
+    
+    public static void main(String[] args) {
+           String input = "Swa$pn&il";
+            String[] arr = input.split("");
+            String regex = "[^0-9a-zA-Z]";
+        
+            StringBuilder reversed=new StringBuilder(input.replaceAll(regex, "")).reverse();
+            
+            IntStream.range(0, input.length()-1)
+            .filter(i->arr[i].matches(regex))
+            .forEach(i->reversed.insert(i, arr[i]));
+            
+            System.out.println(reversed);
+    }
+    
+
+Q11) Given a list of integers, divide into two lists one having even numbers and other having odd numbers.
+ 
+
+Solutions:
+
+ List<List<Integer>> lists = intList.stream()
+        .collect(Collectors.groupingBy(key->key%2==0,Collectors.toList()))
+        .entrySet().stream().map(e->e.getValue()).collect(Collectors.toList());        
+        System.out.println(lists);
+
+2. intList.stream()
+                .collect(Collectors.partitioningBy(integerValue->integerValue%2==0))
+                .entrySet().stream().map(mapValue->mapValue.getValue()).collect(Collectors.toList());
+
+3. Map<Boolean, List<Integer>> partitions = ints.stream()
+                .collect(Collectors.partitioningBy(x -> x % 2 == 0));        
+        List<Integer> evens = partitions.get(true);
+        List<Integer> odds = partitions.get(false);
+The entryset logic in solution 1 and 2 is to process the map. and also please know the difference between partitionBy and groupBy and when to use.
+
+
+
+Q12) Given an array of integers (2, 34, 54, 23, 33, 20, 59, 11, 19, 37 ) group the numbers by the range they belong to. The put put should be {0=[2], 50=[54,59], 20=[23,20], 10=[11,19], 30=[34,33,37]}
+
+Solution is: 
+Map<Integer, List<Integer>> map = 
+ Stream.of(2, 34, 54, 23, 33, 20, 59, 11, 19,37).collect(Collectors.groupingBy (i -> i/10 * 10 )); 
+                System.out.println(map);
+
+
+Q13) Given a List of Strings  ["as", "123", "32", "2as"], create another Integer list that contains only integers. The output shoul be: List<Integer> iList = [123,32] 
+Solution: 
+ listOfStrings.stream().filter( ss -> ss.matches("[0-9]*")).map(Integer::valueOf).collect(Collectors.toList());
+
+
+Q14) Given an array of integers arr = {5,6,7,8,5,5,8,8,7) find the sum of the unique elements. The output should be in this case is: 26.
+
+Solution : Arrays.stream(arr).distinct().sum();
+
+
+Q15 ) Given a numeric array , re arrange the elements to form a smallest possible value.
+
+input is: int arr[] = {1, 34, 3, 98, 9, 76, 45, 4};    
+
+output is: 133444576998
+
+Solution is: Arrays.stream(arr).mapToObj(i-> i+"").sorted().forEach(System.out::print);
+
+
+Q16) Given a numeric array , re arrange the elements to form a highest possible value.
+
+input is: int arr[] = {1, 34, 3, 98, 9, 76, 45, 4};    
+
+output is: 998764543431
+
+
+Solution is: Arrays.stream(arr).mapToObj(i-> i+"").sorted((o1,o2) -> (o2+o1).compareTo(o1+o2)).forEach(System.out::print)
+
+
+    2) Arrays.stream(arr12).mapToObj(i-> i+"").sorted(Collections.reverseOrder()).forEach(System.out::print);
+
+
+Q17)  Given a String = The quick brown fox jumps over the lazy dog, find the first non repeated character. (Google interview)
+
+
+    Solution with java 8 :
+
+    String res = Arrays.stream(str.split("")).filter(c -> str.indexOf(c) == str.lastIndexOf(c)).findFirst().get();
+    System.out.println(res);
+	
+	
+	18)go with comupteifpresent, ifAbsent
+	19)go with java objects .. employee and Studnet and implement java8 solutions
+	20)think about map(object, List<List>>
+
+	
+		
+	
+package JavaSamples;
+
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+public class ComupteInJava8 {
+	
+	public static void main(String args[]) {
+		
+		List<Emailclass> list = new ArrayList<Emailclass>();
+		
+		Emailclass class1 = new Emailclass("Arun1", 22, "Arun1@gmail.com", 1000, Arrays.asList("String1","String2","String3"));
+		Emailclass class2 = new Emailclass("Arun2", 23, "Arun2@gmail.com", 2000, Arrays.asList("String1","String2","String3"));
+		Emailclass class3 = new Emailclass("Arun3", 23, "Arun3@gmail.com", 3000, Arrays.asList("String1","String2","String3"));
+		Emailclass class4 = new Emailclass("Arun4", 23, "Arun4@gmail.com", 4000, Arrays.asList("String1","String2","String3"));
+		
+		list.add(class1);
+		list.add(class2);
+		list.add(class3);
+		list.add(class4);
+		
+		Map<String, List<String>> newSubMap = new HashMap<String, List<String>>();
+		
+		for(int i=0;i<list.size(); i++) {
+			newSubMap.put(list.get(i).getName(), list.get(i).getListOfBooks());
+		}
+	    
+		
+		Map newmapKey = newSubMap.entrySet().stream().flatMap(setrow->setrow.getValue().stream().
+				 map(skill -> new AbstractMap.SimpleImmutableEntry(skill, setrow.getKey()))).
+				 collect(Collectors.groupingBy(pair -> pair.getKey()));
+		
+		
+		System.out.println(newmapKey);
+		
+		System.out.println(newmapKey.get("String1"));
+		
+		
+		//{String3=[String3=Arun3, String3=Arun2, String3=Arun4, String3=Arun1], String2=[String2=Arun3, String2=Arun2, String2=Arun4, String2=Arun1], String1=[String1=Arun3, String1=Arun2, String1=Arun4, String1=Arun1]}
+
+		
+
+		
+		//System.out.println(map);
+	}
+
+}
+
+class Emailclass {
+	String name;
+	int age;
+	String emailID;
+	int salary;
+	List<String> listOfBooks;
+	
+	Emailclass(String name, int age, String emailID, int salary, List<String> listofBooks) {
+		this.name = name;
+		this.age = age;
+		this.emailID = emailID;
+		this.salary = salary;
+		this.listOfBooks = listofBooks;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public int getAge() {
+		return age;
+	}
+	public void setAge(int age) {
+		this.age = age;
+	}
+	public String getEmailID() {
+		return emailID;
+	}
+	public void setEmailID(String emailID) {
+		this.emailID = emailID;
+	}
+
+	public int getSalary() {
+		return salary;
+	}
+
+	public void setSalary(int salary) {
+		this.salary = salary;
+	}
+	
+	public List getListOfBooks() {
+		return listOfBooks;
+	}
+
+	public void setListOfBooks(List listOfBooks) {
+		this.listOfBooks = listOfBooks;
+	}
+
+	public String toString() {
+		return name + " " + age + " " + emailID + " " + salary;
+	}
+}
+
+Sorting hashmap based on the string key%2
+https://www.geeksforgeeks.org/java-program-to-sort-a-hashmap-by-keys-and-values/
+
+
+Node node 
+	
+	Gson gson = Google.parser("*.json");
+	Listgson.parse();
+	
+	
+	[
+	  {
+	    "id": "1",
+	    "name": "A"
+	  },
+	  {
+	    "id": "1.1",
+	    "name": "A1",
+	    "parent": "1"
+	  },
+	  {
+	    "id": "2",
+	    "name": "B"
+	  },
+	  {
+	    "id": "2.1",
+	    "name": "B1",
+	    "parent": "2"
+	  },
+	  {
+	    "id": "2.2",
+	    "name": "B2",
+	    "parent": "2"
+	  }
+	]
+}
+
+Sorting the map values by Key 
+
+Map<String, Integer> budget = new HashMap<>();
+budget.put("clothes", 120);
+budget.put("grocery", 150);
+budget.put("transportation", 100);
+budget.put("utility", 130);
+budget.put("rent", 1150);
+budget.put("miscellneous", 90);
+
+System.out.println("map before sorting: " + budget);
+
+// let's sort this map by keys first
+Map<String, Integer> sorted = budget
+.entrySet()
+.stream()
+.sorted(comparingByKey())
+.collect(
+toMap(e -> e.getKey(), e -> e.getValue(),
+(e1, e2) -> e2, LinkedHashMap::new));
+
+
+Implement HashMap<String, List<>>, having linkedlist is one of the approach
+Having Tree is one of the approach. as a value .. implement both the things in the java code.
+
+
+
+Apply the below rules and write the login using streams
+
+1.Filter out the strings that start with a vowel (a, e, i, o, u).
+
+2.Convert the remaining strings to uppercase.
+
+3.Sort the strings in descending order based on their length.
+
+4.Join the sorted strings into a single comma-separated string.
+
+ 
+
+Input- apple, banana, orange, elephant, iguana, octopus, unicorn
+Output - ELEPHANT, UNICORN, ORANGE, IGUANA, , APPLE
+
+
+		List<String> list = new ArrayList<String>();
+		//apple, banana, orange, elephant, iguana, octopus, unicorn
+		list.add("apple");
+		list.add("banana");
+		list.add("orange");
+		list.add("elephant");
+		list.add("iguana");
+		list.add("octopus");
+		list.add("unicorn");
+		
+		//
+		list = list.stream().filter(s -> s.startsWith("a") || s.startsWith("e") || s.startsWith("i") || s.startsWith("o") || s.startsWith("u")).
+		map(x->x.toUpperCase()).sorted(Comparator.comparing(String::length).reversed()).collect(Collectors.toList());
+		
+		
+		System.out.println(list);
+
+
+
+		String s1="abc";
+
+		String s2="abc";//intern()
+		//closable()
+		
+		//cache//
+		
+		
+
+		System.out.println("s1 == s2 " + s1 == s2);//false
+		//s1==s2abc == abc false
+		System.out.println('b' + 'y' + 't' + 'e'); //integer 
+
+
+
+Injecting Prototype to Singleton class
+https://www.baeldung.com/spring-lookup
+
+2 design patterns for each type 			
+
+
+class LRUCache {
+
+     private LinkedHashMap<Integer, Integer> linkHashMap;
+
+     public LRUCache(int capacity) {
+        linkHashMap = new LinkedHashMap<Integer, Integer>(capacity, 0.75F, true) {
+          @Override
+          protected boolean removeEldestEntry(Map.Entry<Integer, Integer> eldest) {
+             return size() > capacity;
+          }
+       };
+     }
+
+     public void put(int key, int value) {
+        linkHashMap.put(key, value);
+     }
+
+     public int get(int key) {
+       return linkHashMap.getOrDefault(key, -1);
+     }
+
+ } 
