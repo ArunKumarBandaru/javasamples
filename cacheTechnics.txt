@@ -1,0 +1,31 @@
+Just wanted to share some cache technics. which are useful for improving the application performance. as you know that, Application doesnt need to go DB everytime. On this you will be saving network itterations.
+
+
+
+TTL  : Time to Live: how much time the record can be there in the cache. after that it will be erased.
+Process of having required record in the cache : 
+When request comes to the Appserver to fetch perticular record, 
+and that perticular record is not available in the cache(Considering Redis). 
+Application is fetching from DB and putting into the cache(for future easy access).
+
+Consider TTL time is 1min, after the time the record will be automatically invalidated. 
+
+Consisterncy : Eventual consistency.
+Reads/Writes : Heavy reads only.
+
+Write around cache :  it is similar to TTL, but it is PUSH based mechanisam.
+Here, we are using cron job to fetch the records from DB and having them in the cache for every period of time.
+
+Consistency : eventual consistency.
+Reads/Writes : Heavey reads only.
+
+write through cache : 
+this is unlikely above two technics, when Application needs write(it could be update/delete/insert) operation. this technique will write through in both Cache and DB as well.
+In read operation: if record is absent, then it fetches from DB and putting into the cache.
+
+write back policy:
+If application needs any kind of write operations it will do in cache first if the record is present. after some point of time it will be updated in the DB. 
+some times it leads to data loss. when if network error happens in between when cache is updating in the DB.
+
+
+One of the most important interview Questions in HLD
